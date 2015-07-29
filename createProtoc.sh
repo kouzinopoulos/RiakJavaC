@@ -1,0 +1,4 @@
+#!/bin/bash
+protoc -I=protoc --java_out=JavaSrc/RiakJavaClient/src/main/java protoc/request.proto
+protoc -I=protoc --java_out=JavaMockup/MockupApp/src/mockupapp/ protoc/request.proto
+protoc -I=protoc --cpp_out=CSrc/src/ protoc/request.proto
