@@ -1,0 +1,8 @@
+package objects;
+
+message DummyObject {
+	required string firstString = 1;
+	required string secondString = 2;
+	optional int32 firstInt = 3;
+	optional int32 secondInt = 4;
+}

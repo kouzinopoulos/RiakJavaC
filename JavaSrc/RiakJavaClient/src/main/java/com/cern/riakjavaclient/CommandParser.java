@@ -33,9 +33,6 @@ public class CommandParser {
                 case "stop":
                     stop=true;
                     break;
-                case "clear":
-                    riakConnection.clearAllData();
-                    break;
             }
         }
     }

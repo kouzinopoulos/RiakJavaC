@@ -99,8 +99,4 @@ public class RiakConnection {
         return retVal;
     }
     
-    public void clearAllData(){
-        System.out.println("Clearing all data");
-        // Todo
-    }
 }
