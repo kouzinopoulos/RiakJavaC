@@ -18,11 +18,19 @@ public class CommandParser {
     RiakConnection riakConnection;
     MessageListener messageListener;
     
+    /**
+     * Constructor
+     * @param riakConnection To execute commands on
+     * @param messageListener To execute commands on
+     */
     public CommandParser(RiakConnection riakConnection, MessageListener messageListener){
         this.riakConnection = riakConnection;
         this.messageListener = messageListener;
     }
     
+    /**
+     * Thread listening to commands on system input
+     */
     public void run(){
         boolean stop = false;
         Scanner scanner = new Scanner(System.in);
@@ -32,6 +40,15 @@ public class CommandParser {
             switch(input.toLowerCase()){
                 case "stop":
                     stop=true;
+                    break;
+                case "delete":
+                    System.out.println("Please provide minKey");
+                    String minKey = scanner.next();
+                    System.out.println("Please provide maxKey");
+                    String maxKey = scanner.next();
+                    System.out.println("Delete from " + minKey + " to " + maxKey + " starting...");
+                    riakConnection.delete(Integer.parseInt(minKey), Integer.parseInt(maxKey));
+                    System.out.println("Done!");
                     break;
             }
         }

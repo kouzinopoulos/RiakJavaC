@@ -9,7 +9,7 @@ MessageSender::MessageSender()
 	// start zeroMQ
 	context = new zmq::context_t(1);
 	socket = new zmq::socket_t(*context, ZMQ_REQ);
-	socket->connect("tcp://localhost:5555");
+	socket->connect("tcp://localhost:5559");
 }
 
 MessageSender::~MessageSender()

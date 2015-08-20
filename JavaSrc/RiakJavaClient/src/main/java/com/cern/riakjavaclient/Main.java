@@ -21,6 +21,11 @@ public class Main {
     static MessageParser messageParser;
     static CommandParser commandParser;
     
+    /**
+     * Main entry point of the program
+     * @param args
+     * @throws InterruptedException 
+     */
     public static void main(String [] args) throws InterruptedException
     {
         // Give application online message
@@ -30,6 +35,12 @@ public class Main {
         List<String> addresses = new LinkedList<>();
         addresses.add("cernvm11");
         addresses.add("cernvm12");
+        addresses.add("cernvm13");
+        addresses.add("cernvm14");
+        addresses.add("cernvm15");
+        addresses.add("cernvm16");
+        addresses.add("cernvm17");
+        addresses.add("cernvm18");
         
         // Start the connection to Riak
         System.out.println("Starting riak Client");

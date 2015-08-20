@@ -20,19 +20,29 @@ public class MessageParser {
     RiakConnection riakConnection;
     byte[] replyOK;
     
+    /**
+     * constructor
+     * @param riakConnection to executed parsed commands on 
+     */
     public MessageParser(RiakConnection riakConnection){
         this.riakConnection = riakConnection;
+        // pre-generate the ok-message for quick reply
         replyOK = Request.RequestMessage.newBuilder().setCommand("OK").build().toByteArray();
     }
     
+    /**
+     * Parses a message received by the MessageListener and generates a return message
+     * @param request The raw data of the received message
+     * @return The raw data of the reply message
+     */
     public byte[] parseRequest(byte[] request){
         byte[] reply;
         String errorString;
         Request.RequestMessage replyMsg;
         
         try {
-            Request.RequestMessage msg = Request.RequestMessage.parseFrom(request);
-            
+            Request.RequestMessage msg = Request.RequestMessage.parseFrom(request);      
+            // Select function to perform based on message command
             switch(msg.getCommand()){
                 case "PUT":
                     return processPut(msg);
@@ -56,6 +66,12 @@ public class MessageParser {
         return reply;
     }
     
+    /**
+     * Perform a PUT operation on the Riak database
+     * @param msg The received message containing all parameters
+     * @return The generated reply message of the operation on the database
+     * @throws IllegalArgumentException If no key or no value is specified
+     */
     private byte[] processPut(Request.RequestMessage msg) throws IllegalArgumentException{ 
         if((!msg.getKey().isEmpty()) && (!msg.getValue().isEmpty())){
             riakConnection.put(msg.getKey(), msg.getValue());
@@ -66,6 +82,12 @@ public class MessageParser {
         }
     }
     
+    /**
+     * Perform a GET operation on the Riak database
+     * @param msg The received message containing all parameters
+     * @return The generated reply message of the operation on the database
+     * @throws IllegalArgumentException if no key is specified
+     */
     private byte[] processGet(Request.RequestMessage msg) throws IllegalArgumentException{
         if(!msg.getKey().isEmpty()){
             byte[] reply;

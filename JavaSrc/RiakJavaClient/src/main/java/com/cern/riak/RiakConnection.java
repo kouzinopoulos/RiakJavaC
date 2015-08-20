@@ -6,6 +6,10 @@
 package com.cern.riak;
 
 import com.basho.riak.client.api.RiakClient;
+import com.basho.riak.client.api.cap.Quorum;
+import com.basho.riak.client.api.commands.buckets.StoreBucketProperties;
+import com.basho.riak.client.api.commands.kv.DeleteValue;
+import com.basho.riak.client.api.commands.kv.DeleteValue.Option;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -33,11 +37,18 @@ public class RiakConnection {
     RiakCluster cluster;
     Namespace ns;
     
+    /**
+     * constructor
+     * @param addresses Containing the hosts the Riak Cluster consists of 
+     */
     public RiakConnection(List<String> addresses){
         this.addresses = addresses;
-        ns = new Namespace("default", "RiakJavaClientBucket");
+        ns = new Namespace("default", "RiakJavaClientBucket2");    
     }
     
+    /**
+     * Connect to the Riak cluster
+     */
     public void connect(){
         RiakNode.Builder builder = new RiakNode.Builder();
             builder.withMinConnections(10);
@@ -48,24 +59,39 @@ public class RiakConnection {
             cluster = new RiakCluster.Builder(nodes).build();
             cluster.start();
             client = new RiakClient(cluster);
+                /*    StoreBucketProperties storeProps= new StoreBucketProperties.Builder(ns).withR(1).build();
+        try {
+            client.execute(storeProps);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
         } catch (UnknownHostException ex) {
             Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
             // Throw exception
         }
     }
     
+    /**
+     * Disconnect from the Riak cluster
+     */
     public void disconnect(){
         client.shutdown();;
     }
     
+    //.withLocation(location).withOption(StoreValue.Option.W, new Quorum(-2)).build();
+    /**
+     * Perform a put operation on the Riak cluster
+     * @param key
+     * @param value 
+     */
     public void put(String key, String value){
-        System.out.println("PUT");
         Location location = new Location(ns, key);
         RiakObject riakObject = new RiakObject();
         riakObject.setValue(BinaryValue.create(value));
         StoreValue store = new StoreValue.Builder(riakObject)
                 .withLocation(location).build();
-                //.withOption(Option.W, new Quorum(3)).build();
         try {
             client.execute(store);
         } catch (ExecutionException ex) {
@@ -77,14 +103,20 @@ public class RiakConnection {
         }
     }
     
+    /**
+     * Perform a get operation on the Riak cluster
+     * @param key
+     * @return the value string returned by the cluster
+     */
     public String get(String key){
-        System.out.println("GET");
         String retVal = null;
         
         Location location = new Location(ns, key);
         
         try {
+            //FetchValue fv = new FetchValue.Builder(location).withOption(FetchValue.Option.R, new Quorum(-2)).build();
             FetchValue fv = new FetchValue.Builder(location).build();
+            
             FetchValue.Response response = client.execute(fv);
             RiakObject obj = response.getValue(RiakObject.class);
             retVal = obj.getValue().toString();
@@ -99,4 +131,23 @@ public class RiakConnection {
         return retVal;
     }
     
+    /**
+     * Delete a range of keys from the database, useful in testing
+     * @param minKey The lowest key value to delete
+     * @param maxKey The highest key value to delete
+     */
+    public void delete(int minKey, int maxKey){
+        for(int i=minKey; i<maxKey+1; i++){
+            String key = Integer.toString(i);
+            Location loc = new Location(ns, key);
+            DeleteValue dv = new DeleteValue.Builder(loc).build();
+            try {
+                client.execute(dv);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }
