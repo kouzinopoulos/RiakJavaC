@@ -37,13 +37,20 @@ public class RiakConnection {
     RiakCluster cluster;
     Namespace ns;
     
+    boolean readQuorumOff;
+    boolean writeQuorumOff;
+    
     /**
      * constructor
      * @param addresses Containing the hosts the Riak Cluster consists of 
+     * @param readQuorumOff Indicates whether to use quorum guarantees for GET
+     * @param writeQuorumOff Indicates whether to use quorum guarantees for PUT
      */
-    public RiakConnection(List<String> addresses){
+    public RiakConnection(List<String> addresses, boolean readQuorumOff, boolean writeQuorumOff){
         this.addresses = addresses;
-        ns = new Namespace("default", "RiakJavaClientBucket2");    
+        ns = new Namespace("default", "RiakJavaClientBucket2");
+        this.readQuorumOff = readQuorumOff;
+        this.writeQuorumOff = writeQuorumOff;
     }
     
     /**
@@ -80,7 +87,7 @@ public class RiakConnection {
         client.shutdown();;
     }
     
-    //.withLocation(location).withOption(StoreValue.Option.W, new Quorum(-2)).build();
+ 
     /**
      * Perform a put operation on the Riak cluster
      * @param key
@@ -90,8 +97,16 @@ public class RiakConnection {
         Location location = new Location(ns, key);
         RiakObject riakObject = new RiakObject();
         riakObject.setValue(BinaryValue.create(value));
-        StoreValue store = new StoreValue.Builder(riakObject)
+        StoreValue store;
+        if(writeQuorumOff){
+            // Don't perform quorum guarantees
+            store = new StoreValue.Builder(riakObject)
+                .withLocation(location).withOption(StoreValue.Option.W, new Quorum(-2)).build();
+        }else{
+            // perform quroum guarantees (default)
+            store = new StoreValue.Builder(riakObject)
                 .withLocation(location).build();
+        }
         try {
             client.execute(store);
         } catch (ExecutionException ex) {
@@ -114,8 +129,15 @@ public class RiakConnection {
         Location location = new Location(ns, key);
         
         try {
-            //FetchValue fv = new FetchValue.Builder(location).withOption(FetchValue.Option.R, new Quorum(-2)).build();
-            FetchValue fv = new FetchValue.Builder(location).build();
+            FetchValue fv;
+            if(readQuorumOff){
+                // don't perform quorum guarantees
+                fv = new FetchValue.Builder(location).withOption(FetchValue.Option.R, new Quorum(-2)).build();
+            
+            }else{
+                // perform quroum guarantees (default)
+                fv = new FetchValue.Builder(location).build();
+            }
             
             FetchValue.Response response = client.execute(fv);
             RiakObject obj = response.getValue(RiakObject.class);

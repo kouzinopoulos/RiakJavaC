@@ -28,6 +28,22 @@ public class Main {
      */
     public static void main(String [] args) throws InterruptedException
     {
+        boolean readQuorumOff = false;
+        boolean writeQuorumOff = false;
+        
+        if(args.length>0){
+            for(String s : args){
+                if(s.compareToIgnoreCase("readQuorumOff")==0){
+                    readQuorumOff=true;
+                    System.out.println("No read quorum");
+                }
+                if(s.compareToIgnoreCase("writeQuorumOff")==0){
+                    writeQuorumOff=true;
+                    System.out.println("No write quorum");
+                }
+            }
+        }
+
         // Give application online message
         System.out.println("RiakJavaClient launched");
         
@@ -44,7 +60,7 @@ public class Main {
         
         // Start the connection to Riak
         System.out.println("Starting riak Client");
-        riakConnection = new RiakConnection(addresses);
+        riakConnection = new RiakConnection(addresses, readQuorumOff, writeQuorumOff);
         riakConnection.connect();
 
         // Start the message handling
