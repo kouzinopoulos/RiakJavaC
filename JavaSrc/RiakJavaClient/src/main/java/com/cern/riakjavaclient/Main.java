@@ -51,12 +51,12 @@ public class Main {
         List<String> addresses = new LinkedList<>();
         addresses.add("cernvm11");
         addresses.add("cernvm12");
-        addresses.add("cernvm13");
-        addresses.add("cernvm14");
-        addresses.add("cernvm15");
-        addresses.add("cernvm16");
-        addresses.add("cernvm17");
-        addresses.add("cernvm18");
+        //addresses.add("cernvm13");
+        //addresses.add("cernvm14");
+        //addresses.add("cernvm15");
+        //addresses.add("cernvm16");
+        //addresses.add("cernvm17");
+        //addresses.add("cernvm18");
         
         // Start the connection to Riak
         System.out.println("Starting riak Client");
