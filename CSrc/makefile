@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-c -Wall -pedantic
-LDFLAGS=-std=c++0x -lprotobuf -lzmq
+CFLAGS=-Wall -pedantic -I/opt/alice/external/include/
+LDFLAGS=-std=c++0x -L/opt/alice/external/lib64/ -lprotobuf -lzmq
 SOURCES=src/*
 OBJECTS=$(SOURCES:.cxx=.o)
 EXECUTABLE=CMockup
@@ -8,7 +8,7 @@ EXECUTABLE=CMockup
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
 
 .cxx.o:
 	$(CC) $(CFLAGS) $< -o $@

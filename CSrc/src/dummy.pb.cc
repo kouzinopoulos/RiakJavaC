@@ -110,6 +110,7 @@ const int DummyObject::kSecondIntFieldNumber;
 DummyObject::DummyObject()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:objects.DummyObject)
 }
 
 void DummyObject::InitAsDefaultInstance() {
@@ -119,26 +120,29 @@ DummyObject::DummyObject(const DummyObject& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:objects.DummyObject)
 }
 
 void DummyObject::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  firststring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  secondstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  firststring_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  secondstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   firstint_ = 0;
   secondint_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 DummyObject::~DummyObject() {
+  // @@protoc_insertion_point(destructor:objects.DummyObject)
   SharedDtor();
 }
 
 void DummyObject::SharedDtor() {
-  if (firststring_ != &::google::protobuf::internal::kEmptyString) {
+  if (firststring_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete firststring_;
   }
-  if (secondstring_ != &::google::protobuf::internal::kEmptyString) {
+  if (secondstring_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete secondstring_;
   }
   if (this != default_instance_) {
@@ -167,41 +171,58 @@ DummyObject* DummyObject::New() const {
 }
 
 void DummyObject::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<DummyObject*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 15) {
+    ZR_(firstint_, secondint_);
     if (has_firststring()) {
-      if (firststring_ != &::google::protobuf::internal::kEmptyString) {
+      if (firststring_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         firststring_->clear();
       }
     }
     if (has_secondstring()) {
-      if (secondstring_ != &::google::protobuf::internal::kEmptyString) {
+      if (secondstring_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         secondstring_->clear();
       }
     }
-    firstint_ = 0;
-    secondint_ = 0;
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
 bool DummyObject::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:objects.DummyObject)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // required string firstString = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_firststring()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->firststring().data(), this->firststring().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "firststring");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_secondString;
         break;
@@ -209,16 +230,16 @@ bool DummyObject::MergePartialFromCodedStream(
 
       // required string secondString = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_secondString:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_secondstring()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
             this->secondstring().data(), this->secondstring().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "secondstring");
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_firstInt;
         break;
@@ -226,15 +247,14 @@ bool DummyObject::MergePartialFromCodedStream(
 
       // optional int32 firstInt = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_firstInt:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &firstint_)));
           set_has_firstint();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(32)) goto parse_secondInt;
         break;
@@ -242,25 +262,25 @@ bool DummyObject::MergePartialFromCodedStream(
 
       // optional int32 secondInt = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 32) {
          parse_secondInt:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &secondint_)));
           set_has_secondint();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -268,27 +288,35 @@ bool DummyObject::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:objects.DummyObject)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:objects.DummyObject)
+  return false;
 #undef DO_
 }
 
 void DummyObject::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:objects.DummyObject)
   // required string firstString = 1;
   if (has_firststring()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->firststring().data(), this->firststring().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "firststring");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->firststring(), output);
   }
 
   // required string secondString = 2;
   if (has_secondstring()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->secondstring().data(), this->secondstring().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "secondstring");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->secondstring(), output);
   }
 
@@ -306,15 +334,18 @@ void DummyObject::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:objects.DummyObject)
 }
 
 ::google::protobuf::uint8* DummyObject::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:objects.DummyObject)
   // required string firstString = 1;
   if (has_firststring()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->firststring().data(), this->firststring().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "firststring");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->firststring(), target);
@@ -322,9 +353,10 @@ void DummyObject::SerializeWithCachedSizes(
 
   // required string secondString = 2;
   if (has_secondstring()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
       this->secondstring().data(), this->secondstring().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "secondstring");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->secondstring(), target);
@@ -344,6 +376,7 @@ void DummyObject::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:objects.DummyObject)
   return target;
 }
 
