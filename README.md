@@ -6,3 +6,19 @@ The protocol buffer schema has to be created for dummy.proto and request.proto. 
 
 protoc --cpp_out=../CSrc/src/ dummy.proto
 protoc --cpp_out=../CSrc/src/ request.proto
+
+The java bindings to zmq have to be compiled and installed:
+
+git clone https://github.com/zeromq/jzmq.git
+
+To compile and pack the hwbrocker application, use Apache Ant:
+
+ant
+ant compile
+ant jar
+
+Then, to execute the hwbrocker, use the following:
+
+/usr/lib/jvm/ja-7-openjdk-amd64/jre/bin/java -cp /opt/alice/external/share/java/zmq.jar:/opt/alice/RiakJavaC/hwbroker/dist/hwbroker.jar hwbroker.Hwbroker
+
+If SHA1 checking should be simulated, append "secure" to the command. If debugging information should be printed, append "debug"
