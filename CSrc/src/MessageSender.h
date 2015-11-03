@@ -6,18 +6,17 @@
 
 using namespace std;
 
-class MessageSender
-{
-	public:
-		MessageSender();
-		~MessageSender();
+class MessageSender {
+public:
+  MessageSender();
+  ~MessageSender();
 
-		void send(string message);
-		string receive();
+  void send(string message);
+  string receive();
 
-	private:
-		zmq::context_t* context;
-		zmq::socket_t* socket;
+private:
+  zmq::context_t* context;
+  zmq::socket_t* socket;
 };
 
 #endif

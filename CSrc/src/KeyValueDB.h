@@ -6,17 +6,16 @@
 
 using namespace std;
 
-class KeyValueDB
-{
-	public:
-		KeyValueDB(MessageSender* msgSender);
-		~KeyValueDB();
+class KeyValueDB {
+public:
+  KeyValueDB(MessageSender* msgSender);
+  ~KeyValueDB();
 
-		void putValue(string key, string value);
-		string getValue(string key);
+  void putValue(string key, string value);
+  string getValue(string key);
 
-	private:
-		MessageSender* messageSender;
+private:
+  MessageSender* messageSender;
 };
 
 #endif
