@@ -79,8 +79,9 @@ public
             crypt.reset();
             crypt.update(message);
           }
+
           if (debug) {
-            System.out.println("Backend");
+            System.out.println("Received message from c++ client, forwarding to a riak-java-client");
           }
 
           backend.send(message, more ? ZMQ.SNDMORE : 0);
@@ -95,7 +96,7 @@ public
           more = backend.hasReceiveMore();
 
           if (debug) {
-            System.out.println("frontend");
+            System.out.println("Received message from a riak-java-client, forwarding to c++ client");
           }
 
           frontend.send(message, more ? ZMQ.SNDMORE : 0);

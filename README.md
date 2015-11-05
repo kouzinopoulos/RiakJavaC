@@ -30,9 +30,7 @@ Then, compile the framework by executing make
 
 To compile and pack the hwbrocker application, use Apache Ant:
 
-    ant
-    ant compile
-    ant jar
+    ant compile jar
 
 Then, to execute the hwbrocker, use the following:
 
@@ -44,9 +42,7 @@ If SHA1 checking should be simulated, append "secure" to the command. If debuggi
 
 To compile the interface to the riak java client, from the JavaSrc/RiakJavaClient subdirectory, execute:
 
-    mvn compile
-    mvn package
-    mvn install
+    mvn compile package install
 
 This command will build the interface, create a jar file and download all the java prerequisites, including the google protocol buffers, jzmq?? and the riak java client. Then, to execute the interface, use the following command:
 

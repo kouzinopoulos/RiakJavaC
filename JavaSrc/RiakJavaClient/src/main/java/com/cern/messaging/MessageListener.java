@@ -40,7 +40,7 @@ public
     //  Socket to talk to clients
     responder = context.socket(ZMQ.REP);
     // responder.bind("tcp://*:5555");
-    responder.connect("tcp://cernvm22:5560");
+    responder.connect("tcp://localhost:5560");
 
     System.out.println("Connection to broker");
     byte[] req = responder.recv(0);

@@ -51,8 +51,8 @@ public
 
     // Configuration of Riak Cluster
     List<String> addresses = new LinkedList<>();
-    addresses.add("cernvm11");
-    addresses.add("cernvm12");
+    addresses.add("localhost");
+    //addresses.add("cernvm12");
     // addresses.add("cernvm13");
     // addresses.add("cernvm14");
     // addresses.add("cernvm15");
