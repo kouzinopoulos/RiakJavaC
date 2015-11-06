@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cern.messaging;
 
 import com.cern.riak.RiakConnection;
@@ -11,10 +6,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author tvanstee
- */
 public
 class MessageParser {
 
@@ -47,6 +38,9 @@ public
 
     try {
       Request.RequestMessage msg = Request.RequestMessage.parseFrom(request);
+
+      System.out.println("Parsed message contains command: " + msg.getCommand());
+
       // Select function to perform based on message command
       switch (msg.getCommand()) {
         case "PUT":
@@ -81,6 +75,8 @@ public
 private
   byte[] processPut(Request.RequestMessage msg) throws IllegalArgumentException
   {
+    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
+
     if ((!msg.getKey().isEmpty()) && (!msg.getValue().isEmpty())) {
       riakConnection.put(msg.getKey(), msg.getValue());
       return replyOK;
@@ -100,6 +96,8 @@ private
   {
     if (!msg.getKey().isEmpty()) {
       byte[] reply;
+
+      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
 
       String value = riakConnection.get(msg.getKey());
 

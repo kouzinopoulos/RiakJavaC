@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cern.messaging;
 
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQException;
 
-/**
- *
- * @author tvanstee
- */
 public
 class MessageListener implements Runnable {
 
@@ -34,27 +25,25 @@ public
    */
   @Override public void run()
   {
-    System.out.println("Running the thread");
+    System.out.println("Message listener thread running");
+
     context = ZMQ.context(1);
 
-    //  Socket to talk to clients
+    //  Socket to connect to the broker
     responder = context.socket(ZMQ.REP);
-    // responder.bind("tcp://*:5555");
     responder.connect("tcp://localhost:5560");
 
-    System.out.println("Connection to broker");
     byte[] req = responder.recv(0);
     byte[] rep = messageParser.parseRequest(req);
     responder.send(rep, 0);
     System.out.println("Got first message");
 
     while (!Thread.currentThread().isInterrupted()) {
-      // Wait for next request from the client
       try {
         byte[] request = responder.recv(0);
-        // System.out.println("Got message");
         byte[] reply = messageParser.parseRequest(request);
         responder.send(reply, 0);
+        System.out.println("Got subsequent message");
       }
       catch (ZMQException e) {
         if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {

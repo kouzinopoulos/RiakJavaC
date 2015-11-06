@@ -81,7 +81,7 @@ public
           }
 
           if (debug) {
-            System.out.println("Received message from c++ client, forwarding to a riak-java-client");
+            System.out.println("Received message from the c++ client, forwarding to the riak-java-client");
           }
 
           backend.send(message, more ? ZMQ.SNDMORE : 0);
@@ -96,7 +96,7 @@ public
           more = backend.hasReceiveMore();
 
           if (debug) {
-            System.out.println("Received message from a riak-java-client, forwarding to c++ client");
+            System.out.println("Received message from the riak-java-client, forwarding to the c++ client");
           }
 
           frontend.send(message, more ? ZMQ.SNDMORE : 0);

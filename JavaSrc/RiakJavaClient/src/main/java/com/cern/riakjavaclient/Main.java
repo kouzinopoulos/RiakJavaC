@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cern.riakjavaclient;
 
 import com.cern.messaging.MessageListener;
@@ -11,10 +6,6 @@ import com.cern.riak.RiakConnection;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author tvanstee
- */
 public
 class Main {
   static RiakConnection riakConnection;
@@ -22,14 +13,10 @@ class Main {
   static MessageParser messageParser;
   static CommandParser commandParser;
 
-  /**
-   * Main entry point of the program
-   * @param args
-   * @throws InterruptedException
-   */
 public
   static void main(String[] args) throws InterruptedException
   {
+    // Flags that when set to "true" disable consistency verification read/write in Riak
     boolean readQuorumOff = false;
     boolean writeQuorumOff = false;
 
@@ -46,13 +33,10 @@ public
       }
     }
 
-    // Give application online message
-    System.out.println("RiakJavaClient launched");
-
-    // Configuration of Riak Cluster
+    // Provide the list of addresses for the nodes of the Riak Cluster
     List<String> addresses = new LinkedList<>();
     addresses.add("localhost");
-    //addresses.add("cernvm12");
+    // addresses.add("cernvm12");
     // addresses.add("cernvm13");
     // addresses.add("cernvm14");
     // addresses.add("cernvm15");
@@ -60,12 +44,12 @@ public
     // addresses.add("cernvm17");
     // addresses.add("cernvm18");
 
-    // Start the connection to Riak
+    // Connect to the Riak cluster nodes
     System.out.println("Starting riak Client");
     riakConnection = new RiakConnection(addresses, readQuorumOff, writeQuorumOff);
     riakConnection.connect();
 
-    // Start the message handling
+    // Start message handling
     System.out.println("Starting message listener");
     messageParser = new MessageParser(riakConnection);
     messageListener = new MessageListener(messageParser);

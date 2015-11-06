@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
   obj->SerializeToString(&serializedObject);
 
   // Put and get the serialized object
-  keyValueDB.putValue("serializedKey", serializedObject);
+  keyValueDB.putValue("serializedObjectKey", serializedObject);
   string returnedString = keyValueDB.getValue("serializedObjectKey");
 
   // De-serialize object and print the contained values

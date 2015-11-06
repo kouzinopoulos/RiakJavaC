@@ -1,8 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// Connects to the Riak servers cluster, and executes put/get commands on demand
+
 package com.cern.riak;
 
 import com.basho.riak.client.api.RiakClient;
@@ -26,10 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author tvanstee
- */
 public
 class RiakConnection {
   List<String> addresses;
@@ -65,12 +58,14 @@ public
     RiakNode.Builder builder = new RiakNode.Builder();
     builder.withMinConnections(10);
     builder.withMaxConnections(50);
+
     List<RiakNode> nodes;
     try {
       nodes = RiakNode.Builder.buildNodes(builder, addresses);
       cluster = new RiakCluster.Builder(nodes).build();
       cluster.start();
       client = new RiakClient(cluster);
+
       /*    StoreBucketProperties storeProps= new StoreBucketProperties.Builder(ns).withR(1).build();
 try {
   client.execute(storeProps);
@@ -82,7 +77,6 @@ try {
     }
     catch (UnknownHostException ex) {
       Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-      // Throw exception
     }
   }
 
@@ -107,6 +101,7 @@ public
     Location location = new Location(ns, key);
     RiakObject riakObject = new RiakObject();
     riakObject.setValue(BinaryValue.create(value));
+
     StoreValue store;
     if (writeQuorumOff) {
       // Don't perform quorum guarantees
@@ -160,11 +155,9 @@ public
     }
     catch (ExecutionException ex) {
       Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-      // Throw exception
     }
     catch (InterruptedException ex) {
       Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-      // Throw exception
     }
 
     return retVal;
