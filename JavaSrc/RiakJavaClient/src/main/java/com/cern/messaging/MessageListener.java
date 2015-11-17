@@ -31,12 +31,12 @@ public
 
     //  Socket to connect to the broker
     responder = context.socket(ZMQ.REP);
-    responder.connect("tcp://localhost:5560");
+    responder.connect("tcp://cernvm11:5560");
 
     byte[] req = responder.recv(0);
     byte[] rep = messageParser.parseRequest(req);
     responder.send(rep, 0);
-//    System.out.println("Got first message");
+    System.out.println("Got first message");
 
     while (!Thread.currentThread().isInterrupted()) {
       try {
