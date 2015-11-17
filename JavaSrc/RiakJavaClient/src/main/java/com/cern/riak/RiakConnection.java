@@ -98,7 +98,7 @@ public
 public
   void put(String key, String value)
   {
-    System.out.println("Putting a key/value pair to the Riak db");
+//    System.out.println("Putting a key/value pair to the Riak db");
 
     Location location = new Location(ns, key);
     RiakObject riakObject = new RiakObject();
@@ -136,7 +136,7 @@ public
 public
   String get(String key)
   {
-    System.out.println("Getting a key/value pair from the Riak db");
+//    System.out.println("Getting a key/value pair from the Riak db");
 
     String retVal = null;
 
