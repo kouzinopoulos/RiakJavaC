@@ -39,7 +39,7 @@ public
     try {
       Request.RequestMessage msg = Request.RequestMessage.parseFrom(request);
 
-      System.out.println("Parsed message contains command: " + msg.getCommand());
+//      System.out.println("Parsed message contains command: " + msg.getCommand());
 
       // Select function to perform based on message command
       switch (msg.getCommand()) {
@@ -75,7 +75,7 @@ public
 private
   byte[] processPut(Request.RequestMessage msg) throws IllegalArgumentException
   {
-    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
+//    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
 
     if ((!msg.getKey().isEmpty()) && (!msg.getValue().isEmpty())) {
       riakConnection.put(msg.getKey(), msg.getValue());
@@ -97,7 +97,7 @@ private
     if (!msg.getKey().isEmpty()) {
       byte[] reply;
 
-      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
+//      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
 
       String value = riakConnection.get(msg.getKey());
 

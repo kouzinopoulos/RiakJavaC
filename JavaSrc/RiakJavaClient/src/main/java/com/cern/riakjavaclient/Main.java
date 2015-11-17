@@ -45,12 +45,12 @@ public
     // addresses.add("cernvm18");
 
     // Connect to the Riak cluster nodes
-    System.out.println("Starting riak Client");
+    System.out.println("Connecting to the Riak cluster nodes");
     riakConnection = new RiakConnection(addresses, readQuorumOff, writeQuorumOff);
     riakConnection.connect();
 
     // Start message handling
-    System.out.println("Starting message listener");
+    System.out.println("Starting the message listener");
     messageParser = new MessageParser(riakConnection);
     messageListener = new MessageListener(messageParser);
     messageListener.start();

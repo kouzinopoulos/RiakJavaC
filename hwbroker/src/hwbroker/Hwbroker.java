@@ -55,7 +55,7 @@ public
     frontend.bind("tcp://*:5559");
     backend.bind("tcp://*:5560");
 
-    System.out.println("Launch and connect broker");
+    //System.out.println("Listening to sockets " + " and " + );
 
     Poller items = new Poller(2);
     items.register(frontend, Poller.POLLIN);

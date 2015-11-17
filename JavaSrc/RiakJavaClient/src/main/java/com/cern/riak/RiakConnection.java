@@ -1,4 +1,4 @@
-// Connects to the Riak servers cluster, and executes put/get commands on demand
+// The RiakConnection class connects to the Riak cluster nodes, and executes put/get commands on demand
 
 package com.cern.riak;
 
@@ -98,6 +98,8 @@ public
 public
   void put(String key, String value)
   {
+    System.out.println("Putting a key/value pair to the Riak db");
+
     Location location = new Location(ns, key);
     RiakObject riakObject = new RiakObject();
     riakObject.setValue(BinaryValue.create(value));
@@ -134,6 +136,8 @@ public
 public
   String get(String key)
   {
+    System.out.println("Getting a key/value pair from the Riak db");
+
     String retVal = null;
 
     Location location = new Location(ns, key);

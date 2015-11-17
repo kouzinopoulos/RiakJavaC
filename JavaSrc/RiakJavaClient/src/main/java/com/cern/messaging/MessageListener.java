@@ -36,14 +36,14 @@ public
     byte[] req = responder.recv(0);
     byte[] rep = messageParser.parseRequest(req);
     responder.send(rep, 0);
-    System.out.println("Got first message");
+//    System.out.println("Got first message");
 
     while (!Thread.currentThread().isInterrupted()) {
       try {
         byte[] request = responder.recv(0);
         byte[] reply = messageParser.parseRequest(request);
         responder.send(reply, 0);
-        System.out.println("Got subsequent message");
+//        System.out.println("Got subsequent message");
       }
       catch (ZMQException e) {
         if (e.getErrorCode() == ZMQ.Error.ETERM.getCode()) {

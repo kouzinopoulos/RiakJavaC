@@ -36,6 +36,10 @@ Then, to execute the hwbrocker, use the following:
 
     java -cp /opt/alice/external/share/java/zmq.jar:/opt/alice/RiakJavaC/hwbroker/dist/hwbroker.jar hwbroker.Hwbroker
 
+If the jzmq libraries cannot be located, the following can be used instead:
+
+    java -Djava.library.path=/root/charis/external/lib/ -cp /root/charis/external/share/java/zmq.jar:dist/hwbroker.jar hwbroker.Hwbroker
+
 If SHA1 checking should be simulated, append "secure" to the command. If debugging information should be printed, append "debug"
 
 ### Interface to riak java client
