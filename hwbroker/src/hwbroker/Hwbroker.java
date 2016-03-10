@@ -64,11 +64,16 @@ public
     boolean more = false;
     byte[] message;
 
+    int i = 0;
+
     // switch messages between sockets
     while (!Thread.currentThread().isInterrupted()) {
       items.poll();
 
       if (items.pollin(0)) {
+        if (debug) {
+            System.out.println("C++ message pollin on 0");
+          }
         while (true) {
           message = frontend.recv(0);
           more = frontend.hasReceiveMore();
@@ -81,7 +86,7 @@ public
           }
 
           if (debug) {
-            System.out.println("Received message from the c++ client, forwarding to the riak-java-client");
+            System.out.println("Received message " + i + " from the c++ client, forwarding to the riak-java-client");
           }
 
           backend.send(message, more ? ZMQ.SNDMORE : 0);
@@ -89,14 +94,18 @@ public
             break;
           }
         }
+        i++;
       }
       if (items.pollin(1)) {
+        if (debug) {
+            System.out.println("Java message pollin on 1");
+          }
         while (true) {
           message = backend.recv(0);
           more = backend.hasReceiveMore();
 
           if (debug) {
-            System.out.println("Received message from the riak-java-client, forwarding to the c++ client");
+            System.out.println("Received message " + i + " from the riak-java-client, forwarding to the c++ client");
           }
 
           frontend.send(message, more ? ZMQ.SNDMORE : 0);
@@ -104,6 +113,7 @@ public
             break;
           }
         }
+        i++;
       }
     }
 

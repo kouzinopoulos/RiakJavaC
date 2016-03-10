@@ -49,36 +49,54 @@ public
     this.writeQuorumOff = writeQuorumOff;
   }
 
-  /**
-   * Connect to the Riak cluster
-   */
 public
-  void connect()
+  void connect() throws UnknownHostException
   {
-    RiakNode.Builder builder = new RiakNode.Builder();
-    builder.withMinConnections(10);
-    builder.withMaxConnections(50);
+    // This example will use only one node listening on localhost:8087
+      RiakNode node = new RiakNode.Builder()
+              .withRemoteAddress("137.138.234.68")
+              .withRemotePort(8087)
+              .build();
 
-    List<RiakNode> nodes;
-    try {
-      nodes = RiakNode.Builder.buildNodes(builder, addresses);
-      cluster = new RiakCluster.Builder(nodes).build();
-      cluster.start();
-      client = new RiakClient(cluster);
+    // This cluster object takes our one node as an argument
+    RiakCluster cluster = new RiakCluster.Builder(node)
+            .build();
 
-      /*    StoreBucketProperties storeProps= new StoreBucketProperties.Builder(ns).withR(1).build();
-try {
-  client.execute(storeProps);
-} catch (ExecutionException ex) {
-  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-} catch (InterruptedException ex) {
-  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-}*/
-    }
-    catch (UnknownHostException ex) {
-      Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-    }
+     // The cluster must be started to work, otherwise you will see errors
+     cluster.start();
+     client = new RiakClient(cluster);
   }
+
+//  /**
+//   * Connect to the Riak cluster
+//   */
+//public
+//  void connect()
+//  {
+//    RiakNode.Builder builder = new RiakNode.Builder();
+//    builder.withMinConnections(10);
+//    builder.withMaxConnections(50);
+//
+//    List<RiakNode> nodes;
+//    try {
+//      nodes = RiakNode.Builder.buildNodes(builder, addresses);
+//      cluster = new RiakCluster.Builder(nodes).build();
+//      cluster.start();
+//      client = new RiakClient(cluster);
+//
+//      /*    StoreBucketProperties storeProps= new StoreBucketProperties.Builder(ns).withR(1).build();
+//try {
+//  client.execute(storeProps);
+//} catch (ExecutionException ex) {
+//  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+//} catch (InterruptedException ex) {
+//  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+//}*/
+//    }
+//    catch (UnknownHostException ex) {
+//      Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
+//    }
+//  }
 
   /**
    * Disconnect from the Riak cluster
@@ -96,7 +114,7 @@ public
    * @param value
    */
 public
-  void put(String key, String value)
+  void put(String key, byte[] value)
   {
 //    System.out.println("Putting a key/value pair to the Riak db");
 
@@ -134,11 +152,11 @@ public
    * @return the value string returned by the cluster
    */
 public
-  String get(String key)
+  byte[] get(String key)
   {
 //    System.out.println("Getting a key/value pair from the Riak db");
 
-    String retVal = null;
+    byte[] retVal = null;
 
     Location location = new Location(ns, key);
 
@@ -155,7 +173,7 @@ public
 
       FetchValue.Response response = client.execute(fv);
       RiakObject obj = response.getValue(RiakObject.class);
-      retVal = obj.getValue().toString();
+      retVal = obj.getValue().getValue();
     }
     catch (ExecutionException ex) {
       Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);

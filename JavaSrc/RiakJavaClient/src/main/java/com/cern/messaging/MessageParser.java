@@ -1,6 +1,8 @@
 package com.cern.messaging;
 
 import com.cern.riak.RiakConnection;
+
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.logging.Level;
@@ -39,8 +41,6 @@ public
     try {
       Request.RequestMessage msg = Request.RequestMessage.parseFrom(request);
 
-//      System.out.println("Parsed message contains command: " + msg.getCommand());
-
       // Select function to perform based on message command
       switch (msg.getCommand()) {
         case "PUT":
@@ -78,7 +78,10 @@ private
 //    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
 
     if ((!msg.getKey().isEmpty()) && (!msg.getValue().isEmpty())) {
-      riakConnection.put(msg.getKey(), msg.getValue());
+      byte[] test = msg.getValue().toByteArray();
+//      System.out.println("Length of bytestring value " + msg.getValue().size());
+//      System.out.println("Size of byte[] value " + test.length);
+      riakConnection.put(msg.getKey(), msg.getValue().toByteArray());
       return replyOK;
     } else {
       throw new IllegalArgumentException();
@@ -99,10 +102,12 @@ private
 
 //      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
 
-      String value = riakConnection.get(msg.getKey());
+      byte[] value = riakConnection.get(msg.getKey());
+
+      ByteString valueBuf = ByteString.copyFrom(value);
 
       // Generate reply message
-      reply = Request.RequestMessage.newBuilder().setCommand("OK").setValue(value).build().toByteArray();
+      reply = Request.RequestMessage.newBuilder().setCommand("OK").setValue(valueBuf).build().toByteArray();
 
       return reply;
     } else {

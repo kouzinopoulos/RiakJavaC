@@ -6,6 +6,6 @@ option java_outer_classname = "Request";
 message RequestMessage {
 	required string command = 1;
 	optional string key = 2;
-	optional string value = 3;
+	optional bytes value = 3;
 	optional string error = 4;
 }

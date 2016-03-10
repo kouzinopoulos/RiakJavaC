@@ -48,9 +48,9 @@ To compile the interface to the riak java client, from the JavaSrc/RiakJavaClien
 
     mvn compile package install
 
-This command will build the interface, create a jar file and download all the java prerequisites, including the google protocol buffers, jzmq?? and the riak java client. Then, to execute the interface, use the following command:
+This command will build the interface, create a jar file and download all the java prerequisites, including the google protocol buffers, jzmq and the riak java client. Then, to execute the interface, use the following command:
 
-java -cp ./lib/*:RiakJavaClient-1.0-SNAPSHOT.jar com.cern.riakjavaclient.Main
+    java -cp ./lib/*:RiakJavaClient-1.0-SNAPSHOT.jar com.cern.riakjavaclient.Main
 
 
 ### Configuration of the components
