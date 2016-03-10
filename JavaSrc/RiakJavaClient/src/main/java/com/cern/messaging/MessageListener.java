@@ -33,7 +33,6 @@ public
     responder = context.socket(ZMQ.REP);
     responder.connect("tcp://cernvm14:5560");
 
-
     byte[] req = responder.recv(0);
     byte[] rep = messageParser.parseRequest(req);
 

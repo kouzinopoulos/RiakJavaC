@@ -2,7 +2,6 @@
 
 package com.cern.riak;
 
-import com.basho.riak.client.api.RiakClient;
 import com.basho.riak.client.api.cap.Quorum;
 import com.basho.riak.client.api.commands.buckets.StoreBucketProperties;
 import com.basho.riak.client.api.commands.kv.DeleteValue;
@@ -10,6 +9,7 @@ import com.basho.riak.client.api.commands.kv.DeleteValue.Option;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.api.commands.kv.StoreValue;
+import com.basho.riak.client.api.RiakClient;
 import com.basho.riak.client.core.RiakCluster;
 import com.basho.riak.client.core.RiakNode;
 import com.basho.riak.client.core.query.Location;
@@ -19,6 +19,7 @@ import com.basho.riak.client.core.util.BinaryValue;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,51 +53,27 @@ public
 public
   void connect() throws UnknownHostException
   {
-    // This example will use only one node listening on localhost:8087
-      RiakNode node = new RiakNode.Builder()
-              .withRemoteAddress("137.138.234.68")
-              .withRemotePort(8087)
-              .build();
+    // Keep 10-50 connections to each node.
+    RiakNode.Builder nodeTemplate = new RiakNode.Builder()
+             .withMinConnections(10)
+             .withMaxConnections(50);
 
-    // This cluster object takes our one node as an argument
-    RiakCluster cluster = new RiakCluster.Builder(node)
-            .build();
+    // Create a list of 3 nodes to connect to
+    LinkedList<RiakNode> nodes = new LinkedList<RiakNode>();
+    nodes.add(nodeTemplate.withRemoteAddress("137.138.234.68").withRemotePort(8087).build());
+    //nodes.add(nodeTemplate.withRemoteAddress("172.16.1.35").withRemotePort(8087).build());
+    //nodes.add(nodeTemplate.withRemoteAddress("172.16.1.36").withRemotePort(8087).build());
 
-     // The cluster must be started to work, otherwise you will see errors
-     cluster.start();
-     client = new RiakClient(cluster);
+    // Increase the number of execution attempts (retries) to 5, from the default of 3
+    cluster = new RiakCluster.Builder(nodes)
+             .withExecutionAttempts(5)
+             .build();
+
+    // RiakCluster must be started before given to RiakClient ctor.
+    cluster.start();
+
+    client = new RiakClient(cluster);
   }
-
-//  /**
-//   * Connect to the Riak cluster
-//   */
-//public
-//  void connect()
-//  {
-//    RiakNode.Builder builder = new RiakNode.Builder();
-//    builder.withMinConnections(10);
-//    builder.withMaxConnections(50);
-//
-//    List<RiakNode> nodes;
-//    try {
-//      nodes = RiakNode.Builder.buildNodes(builder, addresses);
-//      cluster = new RiakCluster.Builder(nodes).build();
-//      cluster.start();
-//      client = new RiakClient(cluster);
-//
-//      /*    StoreBucketProperties storeProps= new StoreBucketProperties.Builder(ns).withR(1).build();
-//try {
-//  client.execute(storeProps);
-//} catch (ExecutionException ex) {
-//  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-//} catch (InterruptedException ex) {
-//  Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-//}*/
-//    }
-//    catch (UnknownHostException ex) {
-//      Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);
-//    }
-//  }
 
   /**
    * Disconnect from the Riak cluster
