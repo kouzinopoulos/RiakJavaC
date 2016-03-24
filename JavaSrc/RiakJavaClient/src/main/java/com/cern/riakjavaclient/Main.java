@@ -5,6 +5,8 @@ import com.cern.messaging.MessageParser;
 import com.cern.riak.RiakConnection;
 import java.util.LinkedList;
 import java.util.List;
+import java.lang.Throwable;
+import java.net.UnknownHostException;
 
 public
 class Main {
@@ -47,7 +49,11 @@ public
     // Connect to the Riak cluster nodes
     System.out.println("Connecting to the Riak cluster nodes");
     riakConnection = new RiakConnection(addresses, readQuorumOff, writeQuorumOff);
-    riakConnection.connect();
+    try  {
+      riakConnection.connect();
+    } catch (UnknownHostException e) {
+        e.printStackTrace();
+    }
 
     // Start message handling
     System.out.println("Starting the message listener");
