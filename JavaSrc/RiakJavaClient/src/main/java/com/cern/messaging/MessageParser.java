@@ -75,12 +75,14 @@ public
 private
   byte[] processPut(Request.RequestMessage msg) throws IllegalArgumentException
   {
-//    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
+    System.out.println("Executing a PUT command to the Riak cluster for key: " + msg.getKey());
 
     if ((!msg.getKey().isEmpty()) && (!msg.getValue().isEmpty())) {
-      byte[] test = msg.getValue().toByteArray();
+//      byte[] test = msg.getValue().toByteArray();
 //      System.out.println("Length of bytestring value " + msg.getValue().size());
 //      System.out.println("Size of byte[] value " + test.length);
+//      String string = new String(test);
+//      System.out.println(string);
       riakConnection.put(msg.getKey(), msg.getValue().toByteArray());
       return replyOK;
     } else {
@@ -100,14 +102,19 @@ private
     if (!msg.getKey().isEmpty()) {
       byte[] reply;
 
-//      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
+      System.out.println("Executing a GET command to the Riak cluster for key: " + msg.getKey());
 
       byte[] value = riakConnection.get(msg.getKey());
+      String string = new String(value);
+      System.out.println(string);
 
-      ByteString valueBuf = ByteString.copyFrom(value);
-
-      // Generate reply message
-      reply = Request.RequestMessage.newBuilder().setCommand("OK").setValue(valueBuf).build().toByteArray();
+      // If the object was not found, return a "NOTFOUND" response. Else, return an "OK" + value response
+      if (value == null) {
+        reply = Request.RequestMessage.newBuilder().setCommand("NOTFOUND").build().toByteArray();
+      } else {
+        ByteString valueBuf = ByteString.copyFrom(value);
+        reply = Request.RequestMessage.newBuilder().setCommand("OK").setValue(valueBuf).build().toByteArray();
+      }
 
       return reply;
     } else {

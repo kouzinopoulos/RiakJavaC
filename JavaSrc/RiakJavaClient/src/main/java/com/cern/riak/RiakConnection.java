@@ -60,7 +60,8 @@ public
 
     // Create a list of 3 nodes to connect to
     LinkedList<RiakNode> nodes = new LinkedList<RiakNode>();
-    nodes.add(nodeTemplate.withRemoteAddress("137.138.234.68").withRemotePort(8087).build());
+    //nodes.add(nodeTemplate.withRemoteAddress("137.138.234.68").withRemotePort(8087).build());
+    nodes.add(nodeTemplate.withRemoteAddress("127.0.0.1").withRemotePort(8087).build());
     //nodes.add(nodeTemplate.withRemoteAddress("172.16.1.35").withRemotePort(8087).build());
     //nodes.add(nodeTemplate.withRemoteAddress("172.16.1.36").withRemotePort(8087).build());
 
@@ -131,7 +132,7 @@ public
 public
   byte[] get(String key)
   {
-//    System.out.println("Getting a key/value pair from the Riak db");
+    System.out.println("Getting a key/value pair from the Riak db");
 
     byte[] retVal = null;
 
@@ -149,8 +150,13 @@ public
       }
 
       FetchValue.Response response = client.execute(fv);
-      RiakObject obj = response.getValue(RiakObject.class);
-      retVal = obj.getValue().getValue();
+
+      if (response.isNotFound()) {
+        System.out.println("The key/value pair was not found");
+      } else {
+        RiakObject obj = response.getValue(RiakObject.class);
+        retVal = obj.getValue().getValue();
+      }
     }
     catch (ExecutionException ex) {
       Logger.getLogger(RiakConnection.class.getName()).log(Level.SEVERE, null, ex);

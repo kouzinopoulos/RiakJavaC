@@ -50,16 +50,22 @@ public
 
     Context context = ZMQ.context(1);
 
-    Socket frontend = context.socket(ZMQ.ROUTER);
-    Socket backend = context.socket(ZMQ.DEALER);
-    frontend.bind("tcp://*:5559");
-    backend.bind("tcp://*:5560");
+    Socket frontendPut = context.socket(ZMQ.PULL);
+    frontendPut.bind("tcp://*:5558");
 
-    //System.out.println("Listening to sockets " + " and " + );
+    Socket frontendGet = context.socket(ZMQ.ROUTER);
+    frontendGet.bind("tcp://*:5559");
 
-    Poller items = new Poller(2);
-    items.register(frontend, Poller.POLLIN);
-    items.register(backend, Poller.POLLIN);
+    Socket backendPut = context.socket(ZMQ.PUSH);
+    backendPut.bind("tcp://*:5560");
+
+    Socket backendGet = context.socket(ZMQ.DEALER);
+    backendGet.bind("tcp://*:5561");
+
+    Poller items = new Poller(3);
+    items.register(frontendPut, Poller.POLLIN);
+    items.register(frontendGet, Poller.POLLIN);
+    items.register(backendGet, Poller.POLLIN);
 
     boolean more = false;
     byte[] message;
@@ -75,8 +81,8 @@ public
             System.out.println("C++ message pollin on 0");
           }
         while (true) {
-          message = frontend.recv(0);
-          more = frontend.hasReceiveMore();
+          message = frontendPut.recv(0);
+          more = frontendPut.hasReceiveMore();
 
           if (security) {
             // Calculate sha1 of message
@@ -86,10 +92,10 @@ public
           }
 
           if (debug) {
-            System.out.println("Received message " + i + " from the c++ client, forwarding to the riak-java-client");
+            System.out.println("Received PUT message " + i + " from the c++ client, forwarding to the riak-java-client");
           }
 
-          backend.send(message, more ? ZMQ.SNDMORE : 0);
+          backendPut.send(message, more ? ZMQ.SNDMORE : 0);
           if (!more) {
             break;
           }
@@ -98,17 +104,43 @@ public
       }
       if (items.pollin(1)) {
         if (debug) {
-            System.out.println("Java message pollin on 1");
+            System.out.println("C++ message pollin on 1");
           }
         while (true) {
-          message = backend.recv(0);
-          more = backend.hasReceiveMore();
+          message = frontendGet.recv(0);
+          more = frontendGet.hasReceiveMore();
+
+          if (security) {
+            // Calculate sha1 of message
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(message);
+          }
+
+          if (debug) {
+            System.out.println("Received GET message " + i + " from the c++ client, forwarding to the riak-java-client");
+          }
+
+          backendGet.send(message, more ? ZMQ.SNDMORE : 0);
+          if (!more) {
+            break;
+          }
+        }
+        i++;
+      }
+      if (items.pollin(2)) {
+        if (debug) {
+            System.out.println("Java message pollin on 2");
+          }
+        while (true) {
+          message = backendGet.recv(0);
+          more = backendGet.hasReceiveMore();
 
           if (debug) {
             System.out.println("Received message " + i + " from the riak-java-client, forwarding to the c++ client");
           }
 
-          frontend.send(message, more ? ZMQ.SNDMORE : 0);
+          frontendGet.send(message, more ? ZMQ.SNDMORE : 0);
           if (!more) {
             break;
           }
@@ -117,8 +149,10 @@ public
       }
     }
 
-    frontend.close();
-    backend.close();
+    frontendPut.close();
+    frontendGet.close();
+    backendPut.close();
+    backendGet.close();
     context.term();
   }
 }
