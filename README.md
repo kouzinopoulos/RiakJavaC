@@ -5,7 +5,6 @@ To allow easy and efficient communication between the C/C++ application (or anot
 
 ### Compilation and execution instructions
 
-
 ### Prerequisites
 
 Compile and install the java bindings to zmq:
@@ -17,14 +16,9 @@ Compile and install the java bindings to zmq:
     make && make install
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JZMQ_PATH/lib
 
-### C framework
+Compile the protocol buffers .proto file:
 
-Before compilation of the framework, the schema of protocol buffers has to be created for dummy.proto and request.proto. The generated files should be present at the CSrc/src/ subdirectory.
-
-    protoc --cpp_out=../CSrc/src/ dummy.proto
-    protoc --cpp_out=../CSrc/src/ request.proto
-
-Then, compile the framework by executing make
+    protoc -I=protoc --java_out=JavaSrc/RiakJavaClient/src/main/java protoc/request.proto
 
 ### hwbroker java broker application
 
@@ -34,11 +28,7 @@ To compile and pack the hwbrocker application, use Apache Ant:
 
 Then, to execute the hwbrocker, use the following:
 
-    java -cp /opt/alice/external/share/java/zmq.jar:/opt/alice/RiakJavaC/hwbroker/dist/hwbroker.jar hwbroker.Hwbroker
-
-If the jzmq libraries cannot be located, the following can be used instead:
-
-    java -Djava.library.path=/root/charis/external/lib/ -cp /root/charis/external/share/java/zmq.jar:dist/hwbroker.jar hwbroker.Hwbroker
+    java -Djava.library.path=<java path>/lib/ -cp <jzmq path>/share/java/zmq.jar:dist/hwbroker.jar hwbroker.Hwbroker
 
 If SHA1 checking should be simulated, append "secure" to the command. If debugging information should be printed, append "debug"
 
@@ -51,7 +41,3 @@ To compile the interface to the riak java client, from the JavaSrc/RiakJavaClien
 This command will build the interface, create a jar file and download all the java prerequisites, including the google protocol buffers, jzmq and the riak java client. Then, to execute the interface, use the following command:
 
     java -cp ./lib/*:RiakJavaClient-1.0-SNAPSHOT.jar com.cern.riakjavaclient.Main
-
-
-### Configuration of the components
-
