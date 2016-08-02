@@ -61,7 +61,7 @@ public
     }
 
     // An error occured, reply the errorstring
-    replyMsg = Request.RequestMessage.newBuilder().setCommand("Error").setError(errorString).build();
+    replyMsg = Request.RequestMessage.newBuilder().setCommand("Error").build();
     reply = replyMsg.toByteArray();
     return reply;
   }
@@ -113,7 +113,7 @@ private
         reply = Request.RequestMessage.newBuilder().setCommand("NOTFOUND").build().toByteArray();
       } else {
         ByteString valueBuf = ByteString.copyFrom(value);
-        reply = Request.RequestMessage.newBuilder().setCommand("OK").setValue(valueBuf).build().toByteArray();
+        reply = Request.RequestMessage.newBuilder().setCommand("OK").setDatasource("Riak").setValue(valueBuf).build().toByteArray();
       }
 
       return reply;

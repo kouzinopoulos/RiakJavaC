@@ -47,7 +47,6 @@ public
         items.poll();
 
         if (items.pollin(0)) {
-          //System.out.println("message pollin on 0");
 
           byte[] message = responderPut.recv(0);
 
@@ -56,7 +55,6 @@ public
           messageParser.parseRequest(message);
         }
         if (items.pollin(1)) {
-          //System.out.println("message pollin on 1");
 
           byte[] message = responderGet.recv(0);
 
